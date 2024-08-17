@@ -27,9 +27,10 @@ export default async function PurchasedPortfoliosPage() {
           {portfolios.map((portfolio: any) => (
             <Link
               href={`/portfolios/${portfolio.cardItemId}`}
+              key={portfolio.productId}
+
             >
               <div
-                key={portfolio.productId}
                 className="border p-4 rounded-lg text-white flex w-full h-full"
                 // href={`/portfolios/${portfolio.productId}`}
               >
