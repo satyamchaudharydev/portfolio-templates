@@ -1,6 +1,6 @@
 "use server"
+import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth"
-import { authOptions } from "../api/auth/[...nextauth]/route";
 
 
 export const getAuthStatus = async () => {

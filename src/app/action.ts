@@ -2,10 +2,10 @@
 
 import { db } from "@/db";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
 import { stripe } from "@/lib/stripe";
+import { authOptions } from "@/lib/authOptions";
 
 export async function getUserId() {
   const userSession = (await getServerSession(authOptions)) as any;

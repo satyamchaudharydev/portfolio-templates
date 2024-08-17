@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     const signature = headers().get("stripe-signature");
 
     if (!signature) {
-      return new Error("Invalid signature");
+      throw new Error("Invalid signature");
     }
 
     // Verify Stripe event signature
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       const session = event.data.object as Stripe.Checkout.Session;
 
       if (!session.customer_details?.email) {
-        return new Error("Invalid email");
+        throw new Error("Invalid email");
       }
 
       // Extract userId and orderIds from metadata
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       };
 
       if (!userId || !orderIds) {
-        return new Error("Invalid metadata");
+        throw new Error("Invalid metadata");
       }
 
       // Split orderIds (they are passed as a string, so convert them into an array)
