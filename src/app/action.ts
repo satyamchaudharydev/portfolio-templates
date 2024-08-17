@@ -9,7 +9,6 @@ import { authOptions } from "@/lib/authOptions";
 
 export async function getUserId() {
   const userSession = (await getServerSession(authOptions)) as any;
-  console.log(userSession, "userSEssion", userSession["userId"]);
   return userSession["userId"];
 }
 export async function addOrUpdateCartItem(productId: number, quantity: number) {
@@ -45,13 +44,10 @@ export async function getProducts() {
 }
 
 export async function getCart() {
-  const userId = await getUserId();
 
   try {
     // Fetch cart items for the user
     const cartItems = await axios.get("/api/cart");
-    console.log(cartItems, "cartItems");
-
     return cartItems;
   } catch (error) {
     console.error("Error fetching cart items:", error);
