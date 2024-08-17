@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 
 export async function GET(){
     const user = await getServerSession(authOptions) as any;
-    console.log(user, "user")
     if(!user) {
         return NextResponse.json({message: "User not found", ok: false}, {status: 404});
     }

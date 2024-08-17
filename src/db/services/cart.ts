@@ -7,7 +7,6 @@ import { getSession } from "next-auth/react";
 export const getCart = async () => {
     try {
         const session = getSession()
-        console.log(session, "session")
        
         // Fetch cart items for the user
         const cartItems = await axios.get('/api/cart')

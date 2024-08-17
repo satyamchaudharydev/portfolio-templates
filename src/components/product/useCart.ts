@@ -148,7 +148,6 @@ export function useCart() {
   });
 
   const cartData = session ? cart.data : getLocalCart();
-  console.log(cartData, "cartData")
   return {
     cart: cartData as CartItemProps[],
     addMutation,
