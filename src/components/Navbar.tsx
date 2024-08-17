@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import SectionWrapper from "./SectionWrapper";
 import CartButton from "./cart/CartButton";
 import { CardDrawer } from "./cart/CardDrawer";
@@ -49,6 +49,7 @@ const Navbar = () => {
           <Link href="/" className="flex z-40 font-semibold">
             case<span className="text-green-600">cobra</span>
           </Link>
+         
           {/* <div className='h-full flex items-center space-x-4'>
             {user ? (
               <>
@@ -98,6 +99,9 @@ const Navbar = () => {
             )}
           </div> */}
           <div className="flex gap-10 justify-center items-center">
+            <Link href="/portfolios" className={buttonVariants({variant: "ghost"})}>
+              Your Portfolio
+            </Link>
             <CartButton />
             <AuthButton />
           </div>

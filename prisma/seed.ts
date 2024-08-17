@@ -3,33 +3,61 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  // Create Products with templateHtml and templateFields
   await prisma.product.createMany({
     data: [
       {
-        name: 'Product 1',
-        price: 19.99,
-        description: 'This is product 1',
-        image: 'https://www.framer.com/marketplace/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46785%2FShot_1-1L3uphg9UZL0pz7noVa2Ah5BU0YqWo.jpg&w=750&q=90',
+        name: 'Professional Portfolio',
+        price: 5000, // Price in cents ($50.00)
+        description: 'A professional portfolio template with modern design.',
+        image: 'https://via.placeholder.com/150',
+        templateHtml: `
+          <html>
+            <head><title>{title}</title></head>
+            <body>
+              <h1>{name}</h1>
+              <p>{bio}</p>
+              <div>{experience}</div>
+            </body>
+          </html>
+        `,
+        templateFields: {
+          title: 'Your Name - Portfolio',
+          name: 'John Doe',
+          bio: 'A passionate developer with experience in modern web technologies.',
+          experience: 'Work history goes here...',
+        }
       },
       {
-        name: 'Product 2',
-        price: 29.99,
-        description: 'This is product 2',
-        image: 'https://www.framer.com/marketplace/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46785%2FShot_1-1L3uphg9UZL0pz7noVa2Ah5BU0YqWo.jpg&w=750&q=90',
-      },
-      {
-        name: 'Product 3',
-        price: 9.99,
-        description: 'This is product 3',
-        image: 'https://www.framer.com/marketplace/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46785%2FShot_1-1L3uphg9UZL0pz7noVa2Ah5BU0YqWo.jpg&w=750&q=90',
-      },
-   
-    ],
+        name: 'Creative Portfolio',
+        price: 7500, // Price in cents ($75.00)
+        description: 'A creative portfolio template with a colorful, artistic design.',
+        image: 'https://via.placeholder.com/150',
+        templateHtml: `
+          <html>
+            <head><title>{title}</title></head>
+            <body>
+              <h1>{name}</h1>
+              <div class="about">{about}</div>
+              <div class="projects">{projects}</div>
+            </body>
+          </html>
+        `,
+        templateFields: {
+          title: 'Creative Portfolio - Your Name',
+          name: 'Jane Smith',
+          about: 'Creative artist and web developer.',
+          projects: 'Portfolio projects go here...',
+        }
+      }
+    ]
   });
-
 }
 
 main()
+  .then(() => {
+    console.log('Seeding complete');
+  })
   .catch((e) => {
     console.error(e);
     process.exit(1);

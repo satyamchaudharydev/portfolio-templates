@@ -192,6 +192,7 @@ export const createCheckoutSession = async ({
         userId,
         total: product.price * quantity,
         stripeId: stripeProduct.id,
+        userTemplateFields: product.templateFields || {},
         products: {
           create: {
             productId: product.id,
