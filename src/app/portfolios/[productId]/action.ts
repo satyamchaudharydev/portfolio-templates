@@ -1,16 +1,17 @@
 import { getUserId } from "@/app/action";
-import { db } from "@/db"; 
+import { db } from "@/db";
 
-export const getOrderedPortfolioForProduct = async (productId: number) => {
-    const userId = await getUserId()
-  // Query the database for orders where the user has paid and the order includes the specific productId
-  const orderedPortfolio = await db.orderItem.findMany({
+export const getOrderItemDetails = async (orderItemId: number) => {
+  const userId = await getUserId();
+  if (!userId) {
+    throw new Error("User is not authenticated.");
+  }
+
+  // Query the database for the specific OrderItem
+  const orderItem = await db.orderItem.findUnique({
     where: {
-      order: {
-        userId: userId,
-        paid: true, // Only get orders where payment has been completed
-      },
-      productId: productId, 
+      id: orderItemId,
+
     },
     include: {
       product: true, 
@@ -18,5 +19,14 @@ export const getOrderedPortfolioForProduct = async (productId: number) => {
     },
   });
 
-  return orderedPortfolio?.[0];
+  if (!orderItem) {
+    throw new Error("Order item not found.");
+  }
+
+  // Optional: Verify that the order item belongs to the user
+  if (orderItem.order.userId !== userId) {
+    throw new Error("User is not authorized to view this order item.");
+  }
+
+  return orderItem;
 };

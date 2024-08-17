@@ -26,7 +26,7 @@ export default async function PurchasedPortfoliosPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {portfolios.map((portfolio: any) => (
             <Link
-              href={`/portfolios/${portfolio.productId}`}
+              href={`/portfolios/${portfolio.cardItemId}`}
             >
               <div
                 key={portfolio.productId}
