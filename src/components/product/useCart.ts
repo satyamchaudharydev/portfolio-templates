@@ -39,9 +39,12 @@ export function useCart() {
         return { previousCart };
       },
       onError: (_, __, context) => {
+        if(!session) return
         queryClient.setQueryData(["cartData"], context?.previousCart);
       },
       onSettled: () => {
+        if(!session) return
+
         queryClient.invalidateQueries({ queryKey: ["cartData"] });
       },
     });
