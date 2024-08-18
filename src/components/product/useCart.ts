@@ -7,7 +7,6 @@ import { addOrUpdateCartItem, incrementCartItem, decrementCartItem, deleteCartIt
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { CartItemProps } from "../cart/CartItem";
 
-
 export function useCart() {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
@@ -27,7 +26,7 @@ export function useCart() {
     return updatedCart;
   };
 
-  const createMutation = (
+  const useCreateMutation = (
     mutationFn: (productId: number) => Promise<any>,
     updater: (oldCart: any, productId: number) => any
   ) => {
@@ -48,7 +47,7 @@ export function useCart() {
     });
   };
 
-  const { mutate: addMutation } = createMutation(
+  const { mutate: addMutation } = useCreateMutation(
     (productId) => addOrUpdateCartItem(productId, 1),
     (oldCart, productId) => {
       const existingItem = oldCart.find((item: any) => item.productId === productId);
@@ -64,7 +63,7 @@ export function useCart() {
     }
   );
 
-  const { mutate: incrementMutation } = createMutation(
+  const { mutate: incrementMutation } = useCreateMutation(
     incrementCartItem,
     (oldCart, productId) =>
       oldCart.map((item: any) =>
@@ -72,7 +71,7 @@ export function useCart() {
       )
   );
 
-  const { mutate: decrementMutation } = createMutation(
+  const { mutate: decrementMutation } = useCreateMutation(
     decrementCartItem,
     (oldCart, productId) =>
       oldCart
@@ -82,7 +81,7 @@ export function useCart() {
         .filter((item: any) => item.quantity > 0)
   );
 
-  const { mutate: deleteMutation } = createMutation(
+  const { mutate: deleteMutation } = useCreateMutation(
     deleteCartItem,
     (oldCart, productId) => oldCart.filter((item: any) => item.productId !== productId)
   );
