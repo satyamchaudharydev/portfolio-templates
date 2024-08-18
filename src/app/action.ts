@@ -196,7 +196,7 @@ export const createCheckoutSession = async ({
       // Create product in Stripe if not found
       stripeProduct = await stripe.products.create({
         name: product.name,
-        images: [product.image],
+        images: [product.image?.[0]],
         default_price_data: {
           unit_amount: product.price * 100, // Make sure the price is in cents
           currency: "usd",
