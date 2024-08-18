@@ -1,25 +1,27 @@
 "use server";
 
+import { getServerSession } from "next-auth";
 import { getUserId } from "../action";
 import { db } from "@/db";
 
 export const getAuthStatus = async (cartItems: any) => {
   const userId = await getUserId();
+  const user = await getServerSession();
   let isNewUser = false;
 
   if (!userId) {
     throw new Error("User not authenticated");
   }
   const existingUser = await db.user.findFirst({
-    where: { id: userId.id },
+    where: { id: userId },
   });
   if (!existingUser) {
     isNewUser = true;
     await db.user.create({
       data: {
-        id: userId.id,
-        email: userId.email,
-        name: userId.name,
+        id: userId,
+        email: user?.user?.email || "",
+        name: user?.user?.name || "",
       },
     });
     for (const item of cartItems) {
