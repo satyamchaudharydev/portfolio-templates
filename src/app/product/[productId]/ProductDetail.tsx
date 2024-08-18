@@ -1,5 +1,6 @@
 "use client";
 import Carousel from "@/components/Carousel"
+import ProductCard from "@/components/product/ProductCard";
 import { useCart } from "@/components/product/useCart";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { EyeIcon, ShoppingCart } from "lucide-react";

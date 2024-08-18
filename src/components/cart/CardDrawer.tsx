@@ -38,7 +38,6 @@ export function CardDrawer({}: {}) {
   const { cart } = useCart();
   const router = useRouter();
   const { data: session } = useSession();
-  const [fakeLoading, setFakeLoading] = useState(false);
   const renderCardContent = () => {
     if (cart && cart.length > 0) {
       return cart.map((product) => (
@@ -65,7 +64,6 @@ export function CardDrawer({}: {}) {
       if (url) {
         router.push(url);
       }
-      throw new Error("Error creating checkout session");
     },
     onError: (error) => {
       toast({
