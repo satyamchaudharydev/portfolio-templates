@@ -55,7 +55,9 @@ export default function Page() {
     if (session) {
       createPaymentSession(discount?.value);
     } else {
-      signIn();
+      signIn("google", {
+        callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? ""}/auth-callback`,
+      })
     }
   };
   if (isPending) {
