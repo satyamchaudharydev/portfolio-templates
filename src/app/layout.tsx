@@ -5,7 +5,10 @@ import Navbar from "@/components/Navbar";
 import Providers from "@/components/Providers";
 import { getServerSession } from "next-auth";
 
-const inter = Nunito_Sans({ subsets: ["latin"] });
+const inter = Nunito_Sans({ weight: ['400', '700'],
+style: ['normal'],
+subsets: ['latin'],
+display: 'swap', });
 
 export const metadata: Metadata = {
   title: "Create Next App",
