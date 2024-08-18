@@ -24,7 +24,7 @@ export default async function PurchasedPortfoliosPage() {
       <div className="container mx-auto px-4 py-8 text-white">
         <h1 className="text-2xl font-bold mb-8 text-white/75">Your Purchased Portfolios</h1>
         {portfolios.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 auto-rows-[350px] gap-8 ">
             {portfolios.map((portfolio: any) => (
               <Link
                 href={`/portfolios/${portfolio.cardItemId}`}

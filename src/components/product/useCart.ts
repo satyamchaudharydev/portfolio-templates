@@ -13,18 +13,20 @@ import { CartItemProps } from "../cart/CartItem";
 import { useSession } from "next-auth/react";
 import product from "@/app/product/[productId]/page";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import axios from "axios";
+
 
 export function useCart() {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [localCart, saveLocalCart] = useLocalStorage("cart", []);
+
   const cart = useQuery({
     queryKey: ["cartData"],
     queryFn: getCart,
     enabled: !!session,
-    initialData: session ? undefined : localCart,
+    initialData: session ? []  : localCart,
   });
-  console.log("localCart", localCart);
 
   const updateLocalCart = (productId: number) => {
     const quantity = 1
@@ -64,8 +66,9 @@ export function useCart() {
       await queryClient.cancelQueries({ queryKey: ["cartData"] });
       const previousCart = queryClient.getQueryData(["cartData"]);
       const products = queryClient.getQueryData(["product"]) as any;
+      console.log(products, "products");
       const product = products.find((product: any) => product.id === productId);
-
+      console.log("cartData",  product, "product")
       const updateCart = (oldCart: any) => {
         const existingItem = oldCart.find(
           (item: any) => item.productId === productId

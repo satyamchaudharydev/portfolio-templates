@@ -46,6 +46,7 @@ export const updateTemplateFields = async ({orderItemId,updateTemplateFields}:{o
     },
     data: {
       userTemplateFields: updateTemplateFields,
+      
     },
   });
   console.log(res, "res");

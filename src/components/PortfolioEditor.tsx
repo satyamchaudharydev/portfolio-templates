@@ -7,6 +7,7 @@ import {
   ResizablePanelGroup,
 } from "./ui/resizable";
 import { useState, useMemo } from "react";
+import useSize from "@/hooks/useSize";
 
 interface FormField {
   label: string;
@@ -21,6 +22,7 @@ interface PortfolioEditorProps {
 
 
 export const PortfolioEditor = ({ fields, templateHtml, handleChange }: PortfolioEditorProps) => {
+  const {width} = useSize();
 
   const parsedHtml = useMemo(() => {
     let parsedHtml = templateHtml;
@@ -30,9 +32,9 @@ export const PortfolioEditor = ({ fields, templateHtml, handleChange }: Portfoli
     });
     return parsedHtml;
   }, [fields, templateHtml]); 
-
+  const direction = width > 768 ? "horizontal" : "vertical";
   return (
-    <ResizablePanelGroup direction="horizontal">
+    <ResizablePanelGroup direction={direction}>
       <ResizablePanel>
         <iframe 
           srcDoc={parsedHtml} 

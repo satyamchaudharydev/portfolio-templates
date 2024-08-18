@@ -38,8 +38,8 @@ export default function ProductCard({
 
   return (
     <Link href={`product/${id}`} prefetch={true}>
-      <div className="flex-col max-h-[300px] h-full relative aspect-auto md:aspect-[0.833652/1]">
-        <div className="rounded-lg shadow-md border border-white/[.08] overflow-hidden relative aspect-auto md:aspect-[0.833652/1] h-full ">
+      <div className="flex-col  h-full relative flex">
+        <div className="rounded-lg shadow-md border border-white/[.08] overflow-hidden relative flex-1">
           <img
             src={image?.[0]}
             alt={name}

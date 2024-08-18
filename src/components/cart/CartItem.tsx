@@ -35,7 +35,7 @@ export default function CartItem({ product, quantity = 1 }: CartItemProps) {
         <button
           className="p-2 bg-[#252c32] rounded-full "
           onClick={() => decrementMutation(product.id)}
-          disabled={quantity <= 1}
+          // disabled={quantity <= 1}
         >
           <MinusIcon className="w-4 h-4" />
         </button>

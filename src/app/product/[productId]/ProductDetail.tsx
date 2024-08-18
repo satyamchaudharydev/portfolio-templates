@@ -3,15 +3,24 @@ import Carousel from "@/components/Carousel"
 import ProductCard from "@/components/product/ProductCard";
 import { useCart } from "@/components/product/useCart";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { EyeIcon, ShoppingCart } from "lucide-react";
+import { useEffect } from "react";
 
 export function ProductDetails({
     product
 }: {
     product: any
 }){
+    const queryClient = useQueryClient()
+
     const {price,name,image} = product || {}
     const {addCartProduct} = useCart()
+    useEffect(() => {
+       console.log(product, "product")
+      //  queryClient.setQueryData(["product"], [product])
+
+    }, [])
     return (
         <div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-8">

@@ -44,15 +44,17 @@ export async function getProducts() {
 }
 
 export async function getCart() {
+  const userId = await getUserId();
+  const cartItems = await db.cartItem.findMany({
+    where: { userId: userId },
+    include: {
+      product: true, // Include product details if needed
+    },
+  });
+  console.log("Cart items", cartItems);
+  return cartItems
 
-  try {
-    // Fetch cart items for the user
-    const cartItems = await axios.get("/api/cart");
-    return cartItems;
-  } catch (error) {
-    console.error("Error fetching cart items:", error);
-    throw new Error("Failed to fetch cart items");
-  }
+ 
 }
 
 export async function incrementCartItem(productId: number) {

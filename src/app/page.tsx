@@ -4,7 +4,7 @@ import {
   QueryClient,
   dehydrate,
 } from "@tanstack/react-query";
-import { getProducts } from "./action";
+import { getProducts, getCart } from "./action";
 import ProductList from "@/components/ProductList";
 import GradientBackground from "@/components/GradientBackground";
 
@@ -13,6 +13,10 @@ export default async function Home() {
   await queryClient.prefetchQuery({
     queryKey: ["product"],
     queryFn: () => getProducts(),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ["cartAll"],
+    queryFn: () => getCart(),
   });
 
   return (
@@ -43,10 +47,8 @@ export default async function Home() {
       </div>
       <div className="bg-black py-6">
         <SectionWrapper>
-          {/* <h2 className="text-[20px] font-semibold text-white/85  mb-8">
-             Templates
-          </h2> */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-1 md:grid-cols-3 lg:grid-cols-4 grid-rows-[300px] ">
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 auto-rows-[350px] gap-8 ">
             <HydrationBoundary state={dehydrate(queryClient)}>
               <ProductList />
             </HydrationBoundary>
