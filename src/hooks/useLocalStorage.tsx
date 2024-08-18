@@ -25,20 +25,20 @@ const useLocalStorage = <T,>(key: string, defaultValue: T): [T, (value: SetValue
   });
 
   // This method updates our localStorage and our state
-  // const setLocalStorageStateValue = (valueOrFn: SetValue<T>) => {
-  //   let newValue: T;
+  const setLocalStorageStateValue = (valueOrFn: SetValue<T>) => {
+    let newValue: T;
 
-  //   if (typeof valueOrFn === "function") {
-  //     newValue = (valueOrFn as (val: T) => T)(localStorageValue);
-  //   } else {
-  //     newValue = valueOrFn;
-  //   }
+    if (typeof valueOrFn === "function") {
+      newValue = (valueOrFn as (val: T) => T)(localStorageValue);
+    } else {
+      newValue = valueOrFn;
+    }
 
-  //   localStorage.setItem(key, JSON.stringify(newValue));
-  //   setLocalStorageValue(newValue);
-  // };
+    localStorage.setItem(key, JSON.stringify(newValue));
+    setLocalStorageValue(newValue);
+  };
 
-  return [localStorageValue, setLocalStorageValue];
+  return [localStorageValue, setLocalStorageStateValue];
 };
 
 export default useLocalStorage;
