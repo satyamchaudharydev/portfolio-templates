@@ -5,6 +5,10 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+export const getTotalQuantity = (data: CartItemProps[]) => {
+    if (!data) return 0
+    return data.reduce((acc, item) => acc + item.quantity, 0)
+  }
 export const getTotalPrice = (data: CartItemProps[]) => {
     if (!data) return 0
     return data.reduce((acc, item) => acc + item.product.price * item.quantity, 0)

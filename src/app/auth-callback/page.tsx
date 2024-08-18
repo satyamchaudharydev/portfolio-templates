@@ -41,8 +41,10 @@ export default function Page() {
 
   if (loading) {
     return (
-      <div className="text-white">
-        <h1>Loading...</h1>
+      <div className="text-white/65 text-center text-3xl ">
+        <h1 className="mt-5">
+          Wait a moment Please.....
+        </h1>
       </div>
     );
   }

@@ -9,7 +9,7 @@ import { authOptions } from "@/lib/authOptions";
 
 export async function getUserId() {
   const userSession = (await getServerSession(authOptions)) as any;
-  return userSession["userId"];
+  return userSession?.["userId"] || "";
 }
 export async function addOrUpdateCartItem(productId: number, quantity: number) {
   const userId = await getUserId();
@@ -122,6 +122,27 @@ export async function decrementCartItem(productId: number) {
   } catch (error) {
     console.error("Error decrementing cart item:", error);
     throw new Error("Failed to decrement cart item");
+  }
+}
+
+export const deleteCartItem = async (productId: number) => {
+  const userId = await getUserId();
+  if(!userId) throw new Error("You must be logged in to delete a cart item");
+  try {
+    console.log("Deleting cart item", productId);
+    await db.cartItem.delete({
+      where: {
+        cardId: {
+          userId: userId,
+          productId: productId,
+        },
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting cart item:", error);
+    throw new Error("Failed to delete cart item");
   }
 }
 const getActiveProducts = async () => {

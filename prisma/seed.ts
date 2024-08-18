@@ -10,7 +10,7 @@ async function main() {
         name: 'Professional Portfolio',
         price: 5000, // Price in cents ($50.00)
         description: 'A professional portfolio template with modern design.',
-        image: 'https://via.placeholder.com/150',
+        image: ['https://gcdnb.pbrd.co/images/VKnApMUXcYOQ.png?o=1'],
         templateHtml: `
           <html>
             <head><title>{title}</title></head>
@@ -32,7 +32,7 @@ async function main() {
         name: 'Creative Portfolio',
         price: 7500, // Price in cents ($75.00)
         description: 'A creative portfolio template with a colorful, artistic design.',
-        image: 'https://via.placeholder.com/150',
+        image: ['https://gcdnb.pbrd.co/images/3lCe1VCZzxqI.png?o=1'],
         templateHtml: `
           <html>
             <head><title>{title}</title></head>

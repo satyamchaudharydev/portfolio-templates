@@ -2,32 +2,34 @@ import Carousel from "@/components/Carousel";
 import SectionWrapper from "@/components/SectionWrapper";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { EyeIcon, ShoppingCart } from "lucide-react";
+import { getProduct } from "./action";
 
-export default function product() {
+export default async function product({params}: {
+  params: {
+    productId: string;
+  };
+}) {
+  const productId = params.productId;
+  const product = await getProduct(parseInt(productId));
+  if(!product) {
+    return <div>Product not found</div>
+  }
   return (
     <SectionWrapper className="py-10">
       <div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-8">
           <Carousel
-            images={[
-              "https://www.framer.com/marketplace/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46791%2FImage_01-F77B2KLFzJTPBURH95fH8iXsTr1dJY.jpg&w=640&q=90",
-              "https://www.framer.com/marketplace/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46791%2FImage_01-F77B2KLFzJTPBURH95fH8iXsTr1dJY.jpg&w=640&q=90",
-              "https://www.framer.com/marketplace/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46791%2FImage_01-F77B2KLFzJTPBURH95fH8iXsTr1dJY.jpg&w=640&q=90",
-              "https://www.framer.com/marketplace/_next/image/?url=https%3A%2F%2Fy4pdgnepgswqffpt.public.blob.vercel-storage.com%2Ftemplates%2F46791%2FImage_01-F77B2KLFzJTPBURH95fH8iXsTr1dJY.jpg&w=640&q=90",
-            ]}
+            images={product.image }
           />
           <div className="text-white flex flex-col gap-4">
             <h1 className="text-4xl font-bold">
-              TodoFusion — Creative Professional Website
+              {product.name}
             </h1>
             <p className="text-base font-bold bg-secondary w-fit rounded-full p-2 px-4">
-              $100.00
+              $ {product.price}
             </p>
             <p className="text-lg text-gray">
-              TodoFusion boosts productivity with seamless task management and
-              real-time collaboration. This scalable, user-friendly Framer
-              template offers comprehensive features for efficient workflow
-              integration.
+              {product.description}
             </p>
             <div className="grid grid-cols-2 w-fit gap-5 mt-4">
               <Button
