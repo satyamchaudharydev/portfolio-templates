@@ -1,5 +1,3 @@
-// import { CartItem, useCartStore } from '@/store/useCartStore';
-import Image from "next/image";
 import { MinusIcon, TrashIcon } from "lucide-react";
 import { PlusIcon } from "lucide-react";
 import { Prisma } from "@prisma/client";
@@ -11,7 +9,7 @@ export type CartItemProps = Prisma.CartItemGetPayload<{
   include: { product: true };
 }>;
 export default function CartItem({ product, quantity = 1 }: CartItemProps) {
-  const { incrementMutation, decrementMutation, deleteCartProduct } = useCart();
+  const { decrementCartProduct, incrementCartProduct, deleteCartProduct } = useCart();
   return (
     <motion.div layout className="flex items-center border-b border-[#252c32] py-4 px-2 gap-2">
       <div className="relative">
@@ -29,13 +27,13 @@ export default function CartItem({ product, quantity = 1 }: CartItemProps) {
       </div>
       <div className="flex-grow">
         <h3 className="font-semibold max-w-[20ch] truncate">{product.name}</h3>
-        <p className="text-gray-600">${product.price.toFixed(2)}</p>
+        <p className="text-white/75">${product.price.toFixed(2)}</p>
       </div>
       <div className="flex items-center justify-stretch gap-1">
         <motion.button
           whileTap={{ scale: 0.9 }}
           className="p-2 bg-[#252c32] rounded-full "
-          onClick={() => decrementMutation(product.id)}
+          onClick={() => decrementCartProduct(product.id)}
         >
           <MinusIcon className="w-4 h-4" />
         </motion.button>
@@ -43,7 +41,7 @@ export default function CartItem({ product, quantity = 1 }: CartItemProps) {
         <motion.button
           whileTap={{ scale: 0.9 }}
           className="p-2 bg-[#252c32] rounded-full"
-          onClick={() => incrementMutation(product.id)}
+          onClick={() => incrementCartProduct(product.id)}
         >
           <PlusIcon className="w-4 h-4" />
         </motion.button>

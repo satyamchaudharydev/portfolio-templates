@@ -1,9 +1,5 @@
-import { getSession } from "next-auth/react";
-import { redirect } from "next/navigation";
 import { getUserId } from "../action";
 import { getPurchasedPortfolios } from "./action";
-import { Prisma } from "@prisma/client";
-import Link from "next/link";
 import SectionWrapper from "@/components/SectionWrapper";
 import PaidFolios from "./PaidFolios";
 
@@ -11,7 +7,9 @@ export default async function PurchasedPortfoliosPage() {
   const userId = await getUserId();
 
   if (!userId) {
-    redirect("/auth/signin");
+    return <div className="text-white m-8">
+      You need to be logged in to view this page. 
+    </div>
   }
 
   let portfolios: any[] = [];

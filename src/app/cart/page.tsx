@@ -61,13 +61,14 @@ export default function Page() {
   if (isPending) {
     return <SectionWrapper className="flex justify-center items-center text-white"><Loader className="text-white" /></SectionWrapper>
   }
-  if (error || !data) {
+  if (error || !cart) {
     return <SectionWrapper className="flex justify-center items-center text-white">Error loading cart</SectionWrapper>
   }
-  if (data.length === 0) {
+  if (cart.length === 0) {
     return <SectionWrapper className="flex justify-center items-center text-white">No items in cart</SectionWrapper>
   }
   const handleCouponApply = () => {
+    if(!session) return;
     setCouponApplied(true);
   };
 
@@ -83,24 +84,29 @@ export default function Page() {
           return <CartItem key={product.productId} {...product} />;
         })}
       </div>
-      <div className="fixed  bottom-0 h-20 w-full">
-        <SectionWrapper className="bg-secondary rounded-t-[30px] flex justify-between items-center px-3 p-3 md:p-3">
+      <div className="fixed  bottom-0  w-full max-sm:min-h-[180px]  h-20">
+        <SectionWrapper className="bg-secondary rounded-t-[30px] flex justify-between items-center px-3 p-3 md:p-3  max-sm:flex-col gap-3">
           <div>
             <CouponCode handleClick={handleCouponApply} code={discountCode} />
           </div>
-          <Button className="p-6 rounded-full  w-[160px] overflow-hidden" onClick={paymentHandleer}>
+          <div className="flex text-white items-center gap-3 max-sm:flex-col">
+             <p className="text-[28px] text-white font-bold">${totalPrice.toFixed(2)}</p>
+             <Button className="p-6 rounded-full  w-[180px] overflow-hidden font-semibold" onClick={paymentHandleer}>
             <AnimatedLoader
               isLoading={paymentPending}
               loadingContent={<Loader className="w-6 h-6" />}
             >
               <span className="flex gap-2">
                 {session
-                  ? `Buy for ${totalPrice.toFixed(2)}`
+                  ? `Checkout`
                   : "Login to Checkout"}
                 <ArrowRight size={20} />
               </span>
             </AnimatedLoader>
           </Button>
+
+          </div>
+          
         </SectionWrapper>
       </div>
 
