@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import CustomButton from "../CustomButton";
 import { toast } from "../ui/use-toast";
+import { itemVariants } from "@/lib/variants";
+import { motion } from "framer-motion";
 
 export default function ProductCard({
   id,
@@ -38,7 +40,7 @@ export default function ProductCard({
 
   return (
     <Link href={`product/${id}`} prefetch={true}>
-      <div className="flex-col  h-full relative flex">
+      <motion.div variants={itemVariants} className="flex-col  h-full relative flex">
         <div className="rounded-lg shadow-md border border-white/[.08] overflow-hidden relative flex-1">
           <img
             src={image?.[0]}
@@ -63,7 +65,7 @@ export default function ProductCard({
             isSelected={hasProduct(id)}
           />
         </div>
-      </div>
+      </motion.div>
     </Link>
   );
 }

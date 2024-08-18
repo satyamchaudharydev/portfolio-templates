@@ -3,59 +3,34 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
+import { getAuthStatus } from "./action";
 
 export default function Page() {
   const router = useRouter();
-  const { data: session } = useSession();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const client = new QueryClient();
 
-  useEffect(() => {
-    const updateCart = async () => {
-      try {
-        const cartData = localStorage.getItem("cart");
-        if (cartData && session) {
-          await axios.post("/api/cart/update", { cartItems: JSON.parse(cartData) });
-          localStorage.removeItem("cart");
-          client.invalidateQueries({queryKey: ["cartData"]});
-          router.push("/");
-        } else if (session) {
-          localStorage.removeItem("cart");
-            client.invalidateQueries({queryKey: ["cartData"]});
-          router.push("/");
-        } else {
-          setError("You need to be logged in to update the cart.");
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error("Error updating cart:", err);
-        setError("Error updating cart. Please try again.");
-        setLoading(false);
-      }
-    };
+  const cartData = JSON.parse(localStorage.getItem("cart") || "[]");
+  const {data} = useQuery({
+    queryKey: ["auth"],
+    queryFn: async () => await getAuthStatus(cartData),
+    retry: true,
+    retryDelay: 500,
+  })
 
-    updateCart();
-  }, [session, router]);
+  
+  if(data?.success){
+    localStorage.removeItem("cart");
+    router.push("/");
+  }
 
-  if (loading) {
+  else{
     return (
       <div className="text-white/65 text-center text-3xl ">
         <h1 className="mt-5">
-          Wait a moment Please.....
+          {data?.isNewUser ? "Updating cart..." : "Redirecting..."}
         </h1>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="text-red-500">
-        <h1>{error}</h1>
-      </div>
-    );
-  }
-
-  return null; // Render nothing after redirect or error message
 }

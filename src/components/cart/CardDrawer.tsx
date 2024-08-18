@@ -9,29 +9,20 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer";
 import CartItem from "./CartItem";
 import { useUIStore } from "@/store/useUiStore";
 import { useCart } from "../product/useCart";
 import { getTotalPrice } from "@/lib/utils";
-import {
-  ArrowRight,
-  MoveLeft,
-  MoveLeftIcon,
-  MoveRightIcon,
-  ShoppingCartIcon,
-  SidebarCloseIcon,
-  X,
-} from "lucide-react";
+import { ArrowRight, ShoppingCartIcon, X } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { createCheckoutSession } from "@/app/action";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { toast, useToast } from "@/components/ui/use-toast";
+import { toast } from "@/components/ui/use-toast";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
 import { Loader } from "../ui/Loader";
+import AnimatedLoader from "../AnimationLoader";
 
 export function CardDrawer({}: {}) {
   const { isCartOpen, toggleCart } = useUIStore((state) => state);
@@ -79,7 +70,7 @@ export function CardDrawer({}: {}) {
       shouldScaleBackground
       setBackgroundColorOnScale={false}
       open={isCartOpen}
-      onClose={() => console.log("closing")}
+      onClose={toggleCart}
       onOpenChange={(open) => {
         if (!open && isCartOpen) {
           toggleCart();
@@ -89,7 +80,7 @@ export function CardDrawer({}: {}) {
       <DrawerContent className="bg-primary flex flex-col rounded-t-[10px] h-full w-[380px] mt-24 fixed bottom-0  p-4  text-white">
         <DrawerHeader className="flex justify-between items-center">
           <DrawerTitle>Your Cart</DrawerTitle>
-          <DrawerClose asChild>
+          <DrawerClose asChild onClick={toggleCart}>
             <Button
               variant="outline"
               className="rounded-full bg-transparent h-10 w-10 p-2 border-white/35"
@@ -108,8 +99,6 @@ export function CardDrawer({}: {}) {
             <p className="">Total</p>
             <p className="font-semibold">${getTotalPrice(cart).toFixed(2)}</p>
           </div>
-          {/* <Button className="w-full mt-2" variant={"secondary"}>Go to Cart</Button> */}
-
           <Button
             className="w-full mt-2 overflow-hidden relative"
             variant={"secondary"}
@@ -121,31 +110,15 @@ export function CardDrawer({}: {}) {
               }
             }}
           >
-            <AnimatePresence mode="popLayout" initial={false}>
-              {!isPending ? (
-                <>
-                  <motion.span
-                    key={1}
-                    initial={{ y: 0, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -30, opacity: 0 }}
-                    className="absolute flex gap-2 " 
-                  >
-                    {session ? "Checkout" : "Login to Checkout"}{" "}
-                    <ArrowRight size={20} />
-                  </motion.span>
-                </>
-              ) : (
-                <motion.span
-                  key={2}
-                  initial={{ y: -30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: 30, opacity: 0 }}
-                >
-                  <Loader className="w-6 h-6" />
-                </motion.span>
-              )}
-            </AnimatePresence>
+            <AnimatedLoader
+              isLoading={isPending}
+              loadingContent={<Loader className="w-6 h-6" />}
+            >
+              <span className="flex gap-2">
+                {session ? "Checkout" : "Login to Checkout"}{" "}
+                <ArrowRight size={20} />
+              </span>
+            </AnimatedLoader>
           </Button>
         </DrawerFooter>
       </DrawerContent>

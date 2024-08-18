@@ -32,20 +32,21 @@ export default function CartItem({ product, quantity = 1 }: CartItemProps) {
         <p className="text-gray-600">${product.price.toFixed(2)}</p>
       </div>
       <div className="flex items-center justify-stretch gap-1">
-        <button
+        <motion.button
+          whileTap={{ scale: 0.9 }}
           className="p-2 bg-[#252c32] rounded-full "
           onClick={() => decrementMutation(product.id)}
-          // disabled={quantity <= 1}
         >
           <MinusIcon className="w-4 h-4" />
-        </button>
+        </motion.button>
         <span className="mx-2">{quantity}</span>
-        <button
+        <motion.button
+          whileTap={{ scale: 0.9 }}
           className="p-2 bg-[#252c32] rounded-full"
           onClick={() => incrementMutation(product.id)}
         >
           <PlusIcon className="w-4 h-4" />
-        </button>
+        </motion.button>
       </div>
     </motion.div>
   );

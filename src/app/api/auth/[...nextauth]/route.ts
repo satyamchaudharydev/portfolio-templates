@@ -1,8 +1,5 @@
-import { db } from "@/db"
 import { authOptions } from "@/lib/authOptions"
-import NextAuth, { NextAuthOptions } from "next-auth"
-
-
+import NextAuth from "next-auth"
 
 
 const handler = NextAuth(authOptions)

@@ -6,6 +6,9 @@ import { Prisma } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { updateTemplateFields } from "./action";
+import { toast } from "@/components/ui/use-toast";
+import AnimatedLoader from "@/components/AnimationLoader";
+import { Loader } from "@/components/ui/Loader";
 
 interface FormField {
   label: string;
@@ -23,11 +26,14 @@ export default function EditorPortfolio({
   data: DataProps;
 }) {
   const [fields, setFields] = useState(initialData);
-  const { mutate: update } = useMutation({
+  const { mutate: update, isPending } = useMutation({
     mutationFn: updateTemplateFields,
     mutationKey: ["updateTemplateFields"],
     onSuccess: () => {
-      alert("Template fields updated");
+      toast({
+        title: "Saved",
+        description: "Portfolio saved successfully",
+      });
     },
   });
   const handleChange = (index: number, value: string) => {
@@ -37,12 +43,10 @@ export default function EditorPortfolio({
   };
 
   const handleSave = () => {
-    // unformat the data
     const updateTemplateFields = {} as any;
     fields.forEach((field) => {
       updateTemplateFields[field.label] = field.value;
     });
-    console.log(updateTemplateFields, "updateTemplateFields");
     update({
       orderItemId: data.id,
       updateTemplateFields,
@@ -56,8 +60,18 @@ export default function EditorPortfolio({
         <h2 className="m-0 text-white/75 leading-[0] flex justify-center items-center text-[14px]">
           {data.product.name}
         </h2>
-        <Button variant="secondary" onClick={() => handleSave()}>Save</Button>
-        {/* <Button>Preview</Button> */}
+        <Button
+            className="w-fit mt-2 overflow-hidden relative"
+            variant={"secondary"}
+            onClick={() => handleSave()}
+          >
+            <AnimatedLoader
+              isLoading={isPending}
+              loadingContent={<Loader className="w-6 h-6" />}
+            >
+              Save
+            </AnimatedLoader>
+          </Button>
       </div>
       <div style={{ height: "calc(100vh - 9rem)" }}>
         <PortfolioEditor

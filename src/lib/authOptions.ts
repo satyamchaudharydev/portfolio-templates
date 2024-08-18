@@ -34,24 +34,6 @@ export const authOptions: NextAuthOptions = {
             if(!profile?.email){
                 throw new Error("No Profile")
             }
-            try{
-                const user = await db.user.upsert({
-                    where: {
-                        id:  profile?.sub,
-                    },
-                    create: {
-                        id: profile?.sub,
-                        email: profile.email,
-                        name: profile.name || "",
-                    },
-                    update: {
-                        name: profile.name
-                    }
-                })
-            }
-            catch(err){
-                console.log(err)
-            }
             
             return true
         }

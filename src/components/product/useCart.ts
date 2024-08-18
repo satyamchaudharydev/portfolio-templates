@@ -25,7 +25,7 @@ export function useCart() {
     queryKey: ["cartData"],
     queryFn: getCart,
     enabled: !!session,
-    initialData: session ? []  : localCart,
+    initialData: session ? undefined  : localCart,
   });
 
   const updateLocalCart = (productId: number) => {
