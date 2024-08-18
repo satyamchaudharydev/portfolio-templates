@@ -117,7 +117,7 @@ export default function Page() {
       </div>
 
       {(couponApplied && session) && (
-        <Confetti width={width} height={height} recycle={false} initialVelocityY={0}  />
+        <Confetti width={width} height={height} recycle={false}  />
       )}
     </SectionWrapper>
   );
