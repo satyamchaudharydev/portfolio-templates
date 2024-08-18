@@ -1,3 +1,4 @@
+import { FormField } from "@/components/PortfolioEditor"
 import { CartItemProps } from "@/components/cart/CartItem"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
@@ -47,3 +48,29 @@ export const discounts = [
     value: 50, // 50% off
   },
 ];
+
+// parse html string
+
+export const htmlParser = (html: string, fields: FormField[] ) => {
+  let parsedHtml = html;
+    fields.forEach((field) => {
+      const regex = new RegExp(`{${field.label}}`, "g");
+      parsedHtml = parsedHtml.replace(regex, field.value || "");
+    });
+    return parsedHtml;
+}
+
+export const formatFormData = (fields: any) => {
+  if (typeof fields === "object") {
+    return Object.keys(fields).map((field, key) => {
+      const item: {
+        label: string;
+        value: string;
+      } = { label: "", value: "" };
+      item.label = field;
+      item.value = fields[field] as string;
+      return item;
+    });
+  }
+  return [];
+};

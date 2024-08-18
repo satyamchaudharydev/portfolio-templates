@@ -79,17 +79,21 @@ export default function Page() {
     couponApplied ? discount?.value : undefined
   );
   return (
-    <SectionWrapper className="flex justify-center items-center">
-      <h1>Cart</h1>
+    <SectionWrapper className="flex justify-center flex-col gap-4 mt-2">
+      <h1 className="text-white/75 font-bold text-base">Cart Items</h1>
       <div className="text-white w-full">
         {cart.map((product) => {
           return <CartItem key={product.productId} {...product} />;
         })}
       </div>
-      <div className="fixed  bottom-0  w-full max-sm:min-h-[180px]  h-20">
+      <div className="fixed  bottom-0  w-full max-sm:min-h-[180px]  h-20 self-center">
         <SectionWrapper className="bg-secondary rounded-t-[30px] flex justify-between items-center px-3 p-3 md:p-3  max-sm:flex-col gap-3">
           <div>
-            <CouponCode handleClick={handleCouponApply} code={discountCode} />
+            {
+              session && (
+                   <CouponCode handleClick={handleCouponApply} code={discountCode} />
+              )
+            }
           </div>
           <div className="flex text-white items-center gap-3 max-sm:flex-col">
              <p className="text-[28px] text-white font-bold">${totalPrice.toFixed(2)}</p>
@@ -112,8 +116,8 @@ export default function Page() {
         </SectionWrapper>
       </div>
 
-      {couponApplied && (
-        <Confetti width={width} height={height} recycle={false} />
+      {(couponApplied && session) && (
+        <Confetti width={width} height={height} recycle={false} initialVelocityY={0}  />
       )}
     </SectionWrapper>
   );

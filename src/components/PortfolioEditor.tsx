@@ -8,8 +8,9 @@ import {
 } from "./ui/resizable";
 import { useState, useMemo } from "react";
 import useSize from "@/hooks/useSize";
+import { htmlParser } from "@/lib/utils";
 
-interface FormField {
+export interface FormField {
   label: string;
   value: string;
 }
@@ -24,14 +25,8 @@ interface PortfolioEditorProps {
 export const PortfolioEditor = ({ fields, templateHtml, handleChange }: PortfolioEditorProps) => {
   const {width} = useSize();
 
-  const parsedHtml = useMemo(() => {
-    let parsedHtml = templateHtml;
-    fields.forEach((field) => {
-      const regex = new RegExp(`{${field.label}}`, "g");
-      parsedHtml = parsedHtml.replace(regex, field.value || "");
-    });
-    return parsedHtml;
-  }, [fields, templateHtml]); 
+  const parsedHtml = useMemo(() => htmlParser(templateHtml, fields)
+  , [fields, templateHtml]); 
   const direction = width > 768 ? "horizontal" : "vertical";
   return (
     <ResizablePanelGroup direction={direction}>

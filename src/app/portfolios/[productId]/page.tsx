@@ -1,3 +1,4 @@
+import { formatFormData } from "@/lib/utils";
 import { getOrderItemDetails } from "./action";
 import EditorPortfolio from "./EditorPortfolio";
 
@@ -22,21 +23,8 @@ export default async function Page({
       console.error("Error parsing template fields:", error);
     }
   }
-  const formatFormData = () => {
-    if (typeof userTemplateFields === "object") {
-      return Object.keys(userTemplateFields).map((field, key) => {
-        const item: {
-          label: string;
-          value: string;
-        } = { label: "", value: "" };
-        item.label = field;
-        item.value = userTemplateFields[field] as string;
-        return item;
-      });
-    }
-    return [];
-  };
-  const inititalFormData = formatFormData();
+  
+  const inititalFormData = formatFormData(userTemplateFields);
   return (
     <div className="text-white">
        <EditorPortfolio

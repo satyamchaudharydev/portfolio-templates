@@ -3,7 +3,7 @@ import {
   QueryClient,
   dehydrate,
 } from "@tanstack/react-query";
-import { getProducts, getCart } from "./action";
+import { getProducts } from "./action";
 import HomeComponent from "@/components/Home";
 
 

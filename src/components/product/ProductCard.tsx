@@ -1,7 +1,6 @@
 "use client";
 import { Product } from "@prisma/client";
 import { useCart } from "@/components/product/useCart";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import CustomButton from "../CustomButton";
 import { toast } from "../ui/use-toast";
@@ -16,7 +15,6 @@ export default function ProductCard({
   description,
 }: Product) {
   const { addCartProduct, hasProduct, deleteCartProduct } = useCart();
-  const { data: session } = useSession();
 
   const handleAddtoCart = () => {
     if (hasProduct(id)) {
@@ -48,7 +46,7 @@ export default function ProductCard({
             className="w-full object-cover mb-4 absolute h-full"
           />
         </div>
-        <div className="flex flex-row pt-2 gap-2 justify-between">
+        <div className="flex flex-row pt-2 gap-2 justify-between flex-wrap">
           <div className="flex-col justify-between items-center">
             <h2
               className="text-lg font-semibold

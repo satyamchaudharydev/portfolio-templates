@@ -16,6 +16,7 @@ export const getAuthStatus = async (cartItems: any) => {
     where: { id: userId },
   });
   if (!existingUser) {
+    console.log("Creating new iser")
     isNewUser = true;
     await db.user.create({
       data: {

@@ -1,36 +1,34 @@
 "use client";
+
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAuthStatus } from "./action";
 
 export default function Page() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const cartData = JSON.parse(localStorage.getItem("cart") || "[]");
-  const {data} = useQuery({
+  const { data } = useQuery({
     queryKey: ["auth"],
-    queryFn: async () => await getAuthStatus(cartData),
+    queryFn: () => getAuthStatus(cartData),
     retry: true,
     retryDelay: 500,
-  })
+  });
 
-  
-  if(data?.success){
+  const shouldUpdateCart = data?.isNewUser && cartData.length > 0;
+
+  if (data?.success) {
+    queryClient.invalidateQueries({ queryKey: ["cartData"] });
     localStorage.removeItem("cart");
-    router.push("/");
+    router.push(shouldUpdateCart ? "/cart" : "/");
   }
 
-  else{
-    return (
-      <div className="text-white/65 text-center text-3xl ">
-        <h1 className="mt-5">
-          {data?.isNewUser ? "Updating cart..." : "Redirecting..."}
-        </h1>
-      </div>
-    );
-  }
-
+  return (
+    <div className="text-white/65 text-center text-3xl">
+      <h1 className="mt-5">
+        {shouldUpdateCart ? "Updating cart..." : "Redirecting..."}
+      </h1>
+    </div>
+  );
 }

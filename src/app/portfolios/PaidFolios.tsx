@@ -9,7 +9,7 @@ const PaidFolios = ({ portfolios }: { portfolios: any[] }) => {
       initial="hidden"
       animate="show"
       variants={staggerItems}
-      className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 auto-rows-[350px] gap-8 "
+      className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-4 auto-rows-[350px] gap-8 "
     >
       {portfolios.map((portfolio: any) => (
         <Link

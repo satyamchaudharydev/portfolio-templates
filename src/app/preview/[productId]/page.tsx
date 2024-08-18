@@ -1,5 +1,5 @@
-import { TemplatePreview } from "@/components/TemplatePreview";
 import { db } from "@/db";
+import { PreviewPage } from "./PreviewPage";
 
 export default async function Page({params}: {
     params: {
@@ -9,19 +9,16 @@ export default async function Page({params}: {
     const product = await db.product.findUnique({
         where: { id: Number(params.productId) },
         select: {
-          templateHtml: true
+          templateHtml: true,
+          templateFields: true,
+          
         },
       });
     if(!product){
         return <div>Product not found</div>
     }
+
     return (
-        <div style={{
-            height: "100vh",
-        }}>
-            <TemplatePreview
-                src={product.templateHtml}
-            />
-k        </div>
+        <PreviewPage templateFields={product.templateFields} templateHtml={product.templateHtml}  />
     )
 }

@@ -1,9 +1,8 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
 import ProductList from "@/components/ProductList";
 import GradientBackground from "@/components/GradientBackground";
 import SectionWrapper from "@/components/SectionWrapper";
-import { motion, useAnimation, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { itemVariants, staggerItems } from "@/lib/variants";
 
 export default function HomeComponent() {
@@ -77,7 +76,7 @@ export default function HomeComponent() {
             variants={staggerItems}
             initial="hidden"
             animate={"show"}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-[350px] gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-4 auto-rows-[350px] gap-8"
           >
             <ProductList />
           </motion.div>
