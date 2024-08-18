@@ -51,7 +51,6 @@ export async function getCart() {
       product: true, // Include product details if needed
     },
   });
-  console.log("Cart items", cartItems);
   return cartItems
 
  
@@ -131,7 +130,6 @@ export const deleteCartItem = async (productId: number) => {
   const userId = await getUserId();
   if(!userId) throw new Error("You must be logged in to delete a cart item");
   try {
-    console.log("Deleting cart item", productId);
     await db.cartItem.delete({
       where: {
         cardId: {
@@ -155,7 +153,8 @@ const getActiveProducts = async () => {
   return availableProducts;
 };
 
-export const createCheckoutSession = async () => {
+export const createCheckoutSession = async (discount: number = 0) => {
+  // Discount should be handled in the backend to prevent tampering, but for now, we'll pass it as an argument
   const userId = await getUserId();
   if (!userId) {
     throw new Error("You must be logged in to create a checkout session");
@@ -163,7 +162,7 @@ export const createCheckoutSession = async () => {
 
   // Fetch active products from Stripe
   let activeProducts = await getActiveProducts();
-  
+
   // Fetch user's cart products from DB
   const cartProducts = await db.cartItem.findMany({
     where: {
@@ -179,16 +178,18 @@ export const createCheckoutSession = async () => {
   }
 
   let orderIds: string[] = []; // Store order IDs to pass in metadata
-  let productIds: string[] = []; 
+  let productIds: string[] = [];
+
+  let stripeItems: any = [];
 
   // Iterate through cart products
   for (const cartProduct of cartProducts) {
     const { product, quantity } = cartProduct;
-    
+
     // Check if the product is already created in Stripe
     let stripeProduct = activeProducts?.find(
       (stripeProduct: any) =>
-        stripeProduct?.name?.toLowerCase() == product?.name?.toLowerCase()
+        stripeProduct?.name?.toLowerCase() === product?.name?.toLowerCase()
     );
 
     if (!stripeProduct) {
@@ -197,7 +198,7 @@ export const createCheckoutSession = async () => {
         name: product.name,
         images: [product.image?.[0]],
         default_price_data: {
-          unit_amount: product.price * 100, // Make sure the price is in cents
+          unit_amount: product.price * 100, // Price in cents
           currency: "usd",
         },
       });
@@ -206,16 +207,21 @@ export const createCheckoutSession = async () => {
       activeProducts = await getActiveProducts();
     }
 
+    // Apply discount (if any) to the product price
+    const discountedPrice = Math.floor(
+      (product.price * (100 - discount)) / 100
+    );
+
     // Create order for each product in DB
     const newOrder = await db.order.create({
       data: {
         userId,
-        total: product.price * quantity,
+        total: discountedPrice * quantity, // Apply the discount to the total
         stripeId: stripeProduct.id,
         products: {
           create: {
             productId: product.id,
-             userTemplateFields: product.templateFields || {},
+            userTemplateFields: product.templateFields || {},
             quantity,
           },
         },
@@ -225,24 +231,16 @@ export const createCheckoutSession = async () => {
     // Store order ID for passing into metadata
     orderIds.push(newOrder.id.toString());
     productIds.push(product.id.toString());
-  }
 
-  let stripeItems: any = [];
-
-  // Build Stripe line items
-  for (const cartProduct of cartProducts) {
-    const { product, quantity } = cartProduct;
-
-    const stripeProduct = activeProducts?.find(
-      (prod: any) => prod?.name?.toLowerCase() == product?.name?.toLowerCase()
-    );
-
-    if (stripeProduct) {
-      stripeItems.push({
-        price: stripeProduct.default_price,
-        quantity: quantity,
-      });
-    }
+    // Build Stripe line items with the discounted price
+    stripeItems.push({
+      price_data: {
+        currency: "usd",
+        product: stripeProduct.id,
+        unit_amount: discountedPrice * 100, // Apply the discount to the unit price in cents
+      },
+      quantity: quantity,
+    });
   }
 
   // Create Stripe Checkout Session
@@ -253,12 +251,13 @@ export const createCheckoutSession = async () => {
     mode: "payment",
     metadata: {
       userId,
-      productIds: productIds.join(','), // Pass all product
-      orderIds: orderIds.join(','), // Pass all order IDs as metadata
+      productIds: productIds.join(","), // Pass all product IDs
+      orderIds: orderIds.join(","), // Pass all order IDs as metadata
     },
     line_items: stripeItems,
   });
 
   return { url: stripeSession.url };
 };
+
 

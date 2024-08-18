@@ -1,8 +1,4 @@
-import { useRouter } from "next/navigation";
 import { getOrderItemDetails } from "./action";
-import { Button } from "@/components/ui/button";
-import { Link } from "lucide-react";
-import { PortfolioEditor } from "@/components/PortfolioEditor";
 import EditorPortfolio from "./EditorPortfolio";
 
 export default async function Page({
@@ -10,7 +6,6 @@ export default async function Page({
 }: {
   params: { productId: string };
 }) {
-  console.log(typeof params.productId);
 
   const data = await getOrderItemDetails(Number(params.productId));
   let templateFields;

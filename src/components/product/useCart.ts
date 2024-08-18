@@ -21,22 +21,20 @@ export function useCart() {
   const { data: session } = useSession();
   const [localCart, saveLocalCart] = useLocalStorage("cart", []);
 
-  const cart = useQuery({
+  let cart = useQuery({
     queryKey: ["cartData"],
     queryFn: getCart,
     enabled: !!session,
     initialData: session ? undefined  : localCart,
   });
-
   const updateLocalCart = (productId: number) => {
     const quantity = 1
     const products = queryClient.getQueryData(["product"]) as any;
-    console.log(products, "products");
     const product = products.find((product: any) => product.id === productId);
-    const existingItem = cart.data.find((item: any) => item.productId === productId);
+    const existingItem = cartData.find((item: any) => item.productId === productId);
     // if the product is already in the cart, update the quantity
     if (existingItem) {
-      const updatedCart = cart.data.map((item: any) =>
+      const updatedCart = cartData.map((item: any) =>
         item.productId === productId
           ? { ...item, quantity: item.quantity + quantity }
           : item
@@ -46,7 +44,7 @@ export function useCart() {
     } else {
       // if the product is not in the cart, add it
       const updatedCart = [
-        ...cart.data,
+        ...cartData,
         {
           product: product,
           userId: "",
@@ -66,9 +64,7 @@ export function useCart() {
       await queryClient.cancelQueries({ queryKey: ["cartData"] });
       const previousCart = queryClient.getQueryData(["cartData"]);
       const products = queryClient.getQueryData(["product"]) as any;
-      console.log(products, "products");
       const product = products.find((product: any) => product.id === productId);
-      console.log("cartData",  product, "product")
       const updateCart = (oldCart: any) => {
         const existingItem = oldCart.find(
           (item: any) => item.productId === productId
@@ -171,26 +167,27 @@ export function useCart() {
       queryClient.refetchQueries({ queryKey: ["cartData"] });
     },
   });
-  const cartData = cart.data
+  const cartData = cart.data || []
 
   const hasProduct = (productId: number) => {
     if (!cartData) return false;
-    console.log(cartData, "cartData");
     return cartData.some((item: any) => item.productId === productId);
   };
 
   const deleteLocalCart = (productId: number) => {
-    const updatedCart = cart.data.filter(
+    const updatedCart = cartData.filter(
       (item: any) => item.productId !== productId
     );
     queryClient.setQueryData(["cartData"], updatedCart);
-    saveLocalCart(updatedCart);
+    if (updatedCart && updatedCart?.length > 0) {
+      saveLocalCart(updatedCart);
+    }
     return updatedCart;
   };
   const incrementLocalCart = (
     productId: number,
   ) => {
-    const updatedCart = cart.data.map((item: any) =>
+    const updatedCart = cartData.map((item: any) =>
       item.productId === productId
         ? { ...item, quantity: item.quantity + 1 }
         : item
@@ -202,7 +199,7 @@ export function useCart() {
   const decrementLocalCart = (
     productId: number,
   ) => {
-    const updatedCart = cart.data.map((item: any) =>
+    const updatedCart = cart?.data?.map((item: any) =>
       item.productId === productId
         ? { ...item, quantity: item.quantity - 1 }
         : item
@@ -218,7 +215,7 @@ export function useCart() {
   const addCartProduct = session ? addMutation : updateLocalCart;
 
   return {
-    cart: cartData as CartItemProps[],
+    cart: cartData as CartItemProps[] | [],
     addCartProduct,
     deleteCartProduct,
     incrementMutation: incrementCartProduct,

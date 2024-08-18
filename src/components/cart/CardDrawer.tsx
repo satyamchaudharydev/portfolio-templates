@@ -15,20 +15,13 @@ import { useUIStore } from "@/store/useUiStore";
 import { useCart } from "../product/useCart";
 import { getTotalPrice } from "@/lib/utils";
 import { ArrowRight, ShoppingCartIcon, X } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { createCheckoutSession } from "@/app/action";
 import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
-import { toast } from "@/components/ui/use-toast";
-import { AnimatePresence, motion } from "framer-motion";
-import { Loader } from "../ui/Loader";
-import AnimatedLoader from "../AnimationLoader";
+import Link from "next/link";
 
 export function CardDrawer({}: {}) {
   const { isCartOpen, toggleCart } = useUIStore((state) => state);
   const { cart } = useCart();
   const router = useRouter();
-  const { data: session } = useSession();
   const renderCardContent = () => {
     if (cart && cart.length > 0) {
       return cart.map((product) => (
@@ -48,22 +41,7 @@ export function CardDrawer({}: {}) {
       );
     }
   };
-  const { mutate: createPaymentSession, isPending } = useMutation({
-    mutationFn: createCheckoutSession,
-    mutationKey: ["get-checkout-session"],
-    onSuccess: ({ url }) => {
-      if (url) {
-        router.push(url);
-      }
-    },
-    onError: (error) => {
-      toast({
-        title: "Error Occurred",
-        variant: "destructive",
-        description: error.message,
-      });
-    },
-  });
+
   return (
     <Drawer
       direction="right"
@@ -99,27 +77,21 @@ export function CardDrawer({}: {}) {
             <p className="">Total</p>
             <p className="font-semibold">${getTotalPrice(cart).toFixed(2)}</p>
           </div>
-          <Button
-            className="w-full mt-2 overflow-hidden relative"
-            variant={"secondary"}
-            onClick={() => {
-              if (session) {
-                createPaymentSession();
-              } else {
-                signIn();
-              }
-            }}
-          >
-            <AnimatedLoader
-              isLoading={isPending}
-              loadingContent={<Loader className="w-6 h-6" />}
+          <Link href="/cart">
+            <Button
+              className="w-full mt-2 overflow-hidden relative"
+              variant={"secondary"}
+              onClick={() => {
+                toggleCart();
+                router.push("/cart");
+              }}
             >
               <span className="flex gap-2">
-                {session ? "Checkout" : "Login to Checkout"}{" "}
-                <ArrowRight size={20} />
-              </span>
-            </AnimatedLoader>
-          </Button>
+                View Cart
+                  <ArrowRight size={20} />
+                </span>
+            </Button>
+          </Link>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

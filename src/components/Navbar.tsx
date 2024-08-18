@@ -16,22 +16,35 @@ const Navbar = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
   const navigation = usePathname();
 
-  const menuItems = [
-    {
+  let menuItems = [
+   {
       component: (
-        <Button variant="secondary" asChild>
-          <Link href="/portfolios" className={"text-[16px]"}>
-            My Portfolios
-          </Link>
-        </Button>
+          <Button variant="secondary" asChild>
+            <Link href="/portfolios" className={"text-[16px]"}>
+              My Portfolios
+            </Link>
+          </Button>
       ),
+      name: "portfolios",
+   },
+    {
+      component: <CartButton />,
+      name: "cart",
+
     },
-    { component: <CartButton /> },
-    { component: <AuthButton /> },
+    {
+      component: <AuthButton />,
+      name: "auth"
+   }
   ];
 
   if (navigation.includes("/preview/")) {
     return null;
+  }
+  if(navigation.includes("/cart")){
+      const newMenuItems = menuItems.filter(item => item.name !== "cart")
+      menuItems = newMenuItems
+    
   }
   return (
     <nav className="sticky z-[100] h-14 inset-x-0 top-0 w-full backdrop-blur-lg transition-all bg-primary text-white">

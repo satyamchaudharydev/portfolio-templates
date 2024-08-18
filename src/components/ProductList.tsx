@@ -14,7 +14,6 @@ export default function ProductList(){
     })
     const client = useQueryClient()
     client.setQueryData(["cartData"], cartData)
-    console.log(cartData, "Cart data", data)
 
     if(error) {
         <h2>{error.message}</h2>

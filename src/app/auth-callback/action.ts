@@ -6,7 +6,6 @@ import { db } from "@/db";
 export const getAuthStatus = async (cartItems: any) => {
   const userId = await getUserId();
   let isNewUser = false;
-  console.log(userId, "userId");
 
   if (!userId) {
     throw new Error("User not authenticated");
