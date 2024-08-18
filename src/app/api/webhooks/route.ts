@@ -27,29 +27,36 @@ export async function POST(req: Request) {
         throw new Error("Invalid email");
       }
 
-      // Extract userId and orderIds from metadata
-      const { userId, orderIds } = session.metadata || {
+      // Extract fields from metadata
+      const { userId, orderIds, productIds } = session.metadata || {
         userId: null,
         orderIds: null,
+        productIds: null,
       };
 
-      if (!userId || !orderIds) {
+      if (!userId || !orderIds || !productIds) {
         throw new Error("Invalid metadata");
       }
 
-      // Split orderIds (they are passed as a string, so convert them into an array)
-      const orderIdArray = orderIds.split(",");
+      // Split orderIds and productIds into arrays
+      const orderIdArray = orderIds.split(",").map(Number);
+      const productIdArray = productIds.split(",").map(Number);
 
-      // Iterate through order IDs and update each order status
-      for (const orderId of orderIdArray) {
-        await db.order.update({
-          where: { id: Number(orderId) },
-          data: {
-            paid: true 
+      await db.$transaction(async (transaction) => {
+        // Batch delete cart items for all productIds
+        await transaction.cartItem.deleteMany({
+          where: {
+            userId: userId,
+            productId: { in: productIdArray },
           },
         });
-      }
 
+        // Batch update orders to mark them as paid
+        await transaction.order.updateMany({
+          where: { id: { in: orderIdArray } },
+          data: { paid: true },
+        });
+      });
 
       return new Response("success", { status: 200 });
     }

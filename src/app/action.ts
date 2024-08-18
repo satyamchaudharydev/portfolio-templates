@@ -177,6 +177,7 @@ export const createCheckoutSession = async () => {
   }
 
   let orderIds: string[] = []; // Store order IDs to pass in metadata
+  let productIds: string[] = []; 
 
   // Iterate through cart products
   for (const cartProduct of cartProducts) {
@@ -221,6 +222,7 @@ export const createCheckoutSession = async () => {
 
     // Store order ID for passing into metadata
     orderIds.push(newOrder.id.toString());
+    productIds.push(product.id.toString());
   }
 
   let stripeItems: any = [];
@@ -249,6 +251,7 @@ export const createCheckoutSession = async () => {
     mode: "payment",
     metadata: {
       userId,
+      productIds: productIds.join(','), // Pass all product
       orderIds: orderIds.join(','), // Pass all order IDs as metadata
     },
     line_items: stripeItems,

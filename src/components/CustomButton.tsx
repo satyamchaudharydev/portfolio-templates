@@ -12,17 +12,21 @@ const CustomButton = ({
   className?: string;
   isSelected: boolean;
 }) => {
-
+  const [canAnimate, setCanAnimate] = useState(false);
   return (
     <button
       className={cn(
         "sparkal-button",
         isSelected && "selected",
+        canAnimate && "canAnimate",
         "bg-[#222321] p-2 rounded-full",
         className
       )}
       onClick={(e) => {
         e.preventDefault();
+        if(!canAnimate){
+          setCanAnimate(true);
+        }
         handleClick();
       }}
     >

@@ -151,14 +151,12 @@ html,body{
   
 }
 
-/* .ui-bookmark:hover .bookmark {
-  fill: var(--icon-hover-color);
-} */
+
 .selected{
   background: #1CD760;
   transition: background 0.6s;
 }
-.selected .wrapper::after {
+.selected.canAnimate .wrapper::after {
 
   animation: circles var(--icon-anmt-duration)
     cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -170,13 +168,13 @@ html,body{
 
 }
 
-.selected .wrapper {
+.selected.canAnimate .wrapper {
   fill: var(--icon-primary-color);
   animation: bookmark var(--icon-anmt-duration) forwards;
   transition-delay: 0.3s;
 }
 
-.selected .wrapper::before {
+.selected.canAnimate .wrapper::before {
 
   animation: circle var(--icon-anmt-duration);
   animation-delay: var(--icon-anmt-duration);

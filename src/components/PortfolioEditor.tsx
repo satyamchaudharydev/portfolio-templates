@@ -22,7 +22,6 @@ interface PortfolioEditorProps {
 
 export const PortfolioEditor = ({ fields, templateHtml, handleChange }: PortfolioEditorProps) => {
 
-  // Memoize the parsed HTML with placeholders replaced by field values
   const parsedHtml = useMemo(() => {
     let parsedHtml = templateHtml;
     fields.forEach((field) => {
