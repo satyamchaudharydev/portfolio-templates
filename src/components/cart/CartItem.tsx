@@ -12,12 +12,11 @@ export type CartItemProps = Prisma.CartItemGetPayload<{
 }>;
 export default function CartItem({ product, quantity = 1 }: CartItemProps) {
   const { incrementMutation, decrementMutation, deleteCartProduct } = useCart();
-
   return (
-    <motion.div layout className="flex items-center border-b border-[#252c32] py-4 px-2">
+    <motion.div layout className="flex items-center border-b border-[#252c32] py-4 px-2 gap-2">
       <div className="relative">
         <img
-          src={product.image}
+          src={product.image[0]}
           width={60}
           height={60}
           className="object-contain mr-4 rounded-md"
@@ -29,7 +28,7 @@ export default function CartItem({ product, quantity = 1 }: CartItemProps) {
         </Button>
       </div>
       <div className="flex-grow">
-        <h3 className="font-semibold">{product.name}</h3>
+        <h3 className="font-semibold max-w-[20ch] truncate">{product.name}</h3>
         <p className="text-gray-600">${product.price.toFixed(2)}</p>
       </div>
       <div className="flex items-center justify-stretch gap-1">

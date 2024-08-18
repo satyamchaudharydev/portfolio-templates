@@ -4,11 +4,14 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Providers from "@/components/Providers";
 import { getServerSession } from "next-auth";
+import { Toaster } from "@/components/ui/toaster";
 
-const inter = Nunito_Sans({ weight: ['400', '700'],
-style: ['normal'],
-subsets: ['latin'],
-display: 'swap', });
+const nunito = Nunito_Sans({
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,12 +26,13 @@ export default async function RootLayout({
   const session = await getServerSession();
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={nunito.className}>
         <main vaul-drawer-wrapper="">
           <Providers session={session}>
             {
               <>
                 <Navbar />
+                <Toaster  />
                 {children}
               </>
             }

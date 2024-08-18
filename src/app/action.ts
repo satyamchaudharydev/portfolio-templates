@@ -153,11 +153,7 @@ const getActiveProducts = async () => {
   return availableProducts;
 };
 
-export const createCheckoutSession = async ({
-  configId,
-}: {
-  configId?: string;
-}) => {
+export const createCheckoutSession = async () => {
   const userId = await getUserId();
   if (!userId) {
     throw new Error("You must be logged in to create a checkout session");

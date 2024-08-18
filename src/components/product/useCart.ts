@@ -12,12 +12,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CartItemProps } from "../cart/CartItem";
 import { useSession } from "next-auth/react";
 import product from "@/app/product/[productId]/page";
-import { getLocalCart, saveLocalCart } from "@/lib/localCart";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 export function useCart() {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
-  const localCart = getLocalCart();
+  const [localCart, saveLocalCart] = useLocalStorage("cart", []);
   const cart = useQuery({
     queryKey: ["cartData"],
     queryFn: getCart,
@@ -26,16 +26,15 @@ export function useCart() {
   });
   console.log("localCart", localCart);
 
-  const updateLocalCart = (productId: number, quantity: number) => {
-    // get the local cart
-    const cart = localCart;
-    // find the product in the cart
+  const updateLocalCart = (productId: number) => {
+    const quantity = 1
     const products = queryClient.getQueryData(["product"]) as any;
+    console.log(products, "products");
     const product = products.find((product: any) => product.id === productId);
-    const existingItem = cart.find((item: any) => item.productId === productId);
+    const existingItem = cart.data.find((item: any) => item.productId === productId);
     // if the product is already in the cart, update the quantity
     if (existingItem) {
-      const updatedCart = cart.map((item: any) =>
+      const updatedCart = cart.data.map((item: any) =>
         item.productId === productId
           ? { ...item, quantity: item.quantity + quantity }
           : item
@@ -45,7 +44,7 @@ export function useCart() {
     } else {
       // if the product is not in the cart, add it
       const updatedCart = [
-        ...cart,
+        ...cart.data,
         {
           product: product,
           userId: "",
@@ -53,11 +52,13 @@ export function useCart() {
           quantity: quantity,
         },
       ];
+      queryClient.setQueryData(["cartData"], updatedCart);
+
       saveLocalCart(updatedCart as any);
     }
     return cart;
   };
-  const addMutation = useMutation({
+  const {mutate: addMutation} = useMutation({
     mutationFn: (productId: number) => addOrUpdateCartItem(productId, 1),
     onMutate: async (productId: number) => {
       await queryClient.cancelQueries({ queryKey: ["cartData"] });
@@ -171,6 +172,7 @@ export function useCart() {
 
   const hasProduct = (productId: number) => {
     if (!cartData) return false;
+    console.log(cartData, "cartData");
     return cartData.some((item: any) => item.productId === productId);
   };
 
@@ -210,10 +212,11 @@ export function useCart() {
   const deleteCartProduct = session ? deletMuation : deleteLocalCart;
   const incrementCartProduct = session ? incrementMutation : incrementLocalCart;
   const decrementCartProduct = session ? decrementMutation : decrementLocalCart;
+  const addCartProduct = session ? addMutation : updateLocalCart;
+
   return {
     cart: cartData as CartItemProps[],
-    addMutation,
-    updateLocalCart,
+    addCartProduct,
     deleteCartProduct,
     incrementMutation: incrementCartProduct,
     decrementMutation: decrementCartProduct,

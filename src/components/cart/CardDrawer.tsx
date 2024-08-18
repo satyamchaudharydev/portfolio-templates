@@ -15,16 +15,30 @@ import CartItem from "./CartItem";
 import { useUIStore } from "@/store/useUiStore";
 import { useCart } from "../product/useCart";
 import { getTotalPrice } from "@/lib/utils";
-import { ShoppingCartIcon, SidebarCloseIcon, X } from "lucide-react";
+import {
+  ArrowRight,
+  MoveLeft,
+  MoveLeftIcon,
+  MoveRightIcon,
+  ShoppingCartIcon,
+  SidebarCloseIcon,
+  X,
+} from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { createCheckoutSession } from "@/app/action";
 import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
+import { toast, useToast } from "@/components/ui/use-toast";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import { Loader } from "../ui/Loader";
 
 export function CardDrawer({}: {}) {
   const { isCartOpen, toggleCart } = useUIStore((state) => state);
   const { cart } = useCart();
   const router = useRouter();
-
+  const { data: session } = useSession();
+  const [fakeLoading, setFakeLoading] = useState(false);
   const renderCardContent = () => {
     if (cart && cart.length > 0) {
       return cart.map((product) => (
@@ -32,7 +46,10 @@ export function CardDrawer({}: {}) {
       ));
     } else {
       return (
-        <DrawerDescription className="text-center flex items-center gap-6 text-2xl my-auto">
+        <DrawerDescription
+          className="text-center flex items-center gap-6 text-2xl my-auto mx-auto fit-content justify-center"
+          style={{ alignSelf: "center" }}
+        >
           <span>
             <ShoppingCartIcon size={32} />
           </span>
@@ -41,7 +58,7 @@ export function CardDrawer({}: {}) {
       );
     }
   };
-  const {mutate: createPaymentSession} = useMutation({
+  const { mutate: createPaymentSession, isPending } = useMutation({
     mutationFn: createCheckoutSession,
     mutationKey: ["get-checkout-session"],
     onSuccess: ({ url }) => {
@@ -51,9 +68,12 @@ export function CardDrawer({}: {}) {
       throw new Error("Error creating checkout session");
     },
     onError: (error) => {
-      console.error("Error creating checkout session", error);
-    }
-
+      toast({
+        title: "Error Occurred",
+        variant: "destructive",
+        description: error.message,
+      });
+    },
   });
   return (
     <Drawer
@@ -91,8 +111,43 @@ export function CardDrawer({}: {}) {
             <p className="font-semibold">${getTotalPrice(cart).toFixed(2)}</p>
           </div>
           {/* <Button className="w-full mt-2" variant={"secondary"}>Go to Cart</Button> */}
-          <Button className="w-full mt-2" variant={"secondary"} onClick={() => createPaymentSession({})}>
-            Checkout
+
+          <Button
+            className="w-full mt-2 overflow-hidden relative"
+            variant={"secondary"}
+            onClick={() => {
+              if (session) {
+                createPaymentSession();
+              } else {
+                signIn();
+              }
+            }}
+          >
+            <AnimatePresence mode="popLayout" initial={false}>
+              {!isPending ? (
+                <>
+                  <motion.span
+                    key={1}
+                    initial={{ y: 0, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -30, opacity: 0 }}
+                    className="absolute flex gap-2 " 
+                  >
+                    {session ? "Checkout" : "Login to Checkout"}{" "}
+                    <ArrowRight size={20} />
+                  </motion.span>
+                </>
+              ) : (
+                <motion.span
+                  key={2}
+                  initial={{ y: -30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 30, opacity: 0 }}
+                >
+                  <Loader className="w-6 h-6" />
+                </motion.span>
+              )}
+            </AnimatePresence>
           </Button>
         </DrawerFooter>
       </DrawerContent>
